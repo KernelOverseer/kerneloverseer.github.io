@@ -1,0 +1,100 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap');
+@font-face {
+    font-family: "3270";
+    src: url('/static/3270-Regular.ttf');
+}
+
+:root {
+    --main-color:#20ff90;
+    --secondary-color: #000000;
+}
+
+body {
+    background-color: var(--secondary-color);
+    color: var(--main-color);
+    font-family: '3270';
+    text-shadow: 0px 0px 3px var(--main-color);
+}
+
+@keyframes cursor-blink{
+    0% {
+        color: var(--main-color);
+        background-color: var(--main-color);}
+    50% {
+        color: var(--secondary-color);
+        background: var(--secondary-color);}
+    100% {
+        color: var(--main-color);
+        background-color: var(--main-color);}
+}
+
+#cursor{
+    text-shadow: none;
+    animation-name: cursor-blink;
+    animation-duration: 0.5s;
+    animation-iteration-count:infinite;
+}
+
+.after-cursor::after{
+    position:relative;
+    content:"$";
+    text-shadow: none;
+    animation-name: cursor-blink;
+    animation-duration: 0.5s;
+    animation-iteration-count:infinite;
+}
+
+hr {
+    border-color:var(--main-color);
+    box-shadow: 0px 0px 5px var(--main-color);
+}
+
+.bloom{
+    text-shadow: 0px 0px 10px var(--main-color);
+}
+
+.main-content{
+    margin: auto;
+    width: 100%;
+    max-width: 720px;
+    text-align: center;
+}
+
+.content-ltr{
+    text-align: left;
+}
+
+.main-title-bar{
+    margin:  auto;
+    width: 100%;
+    max-width: 720px;
+    text-align: center;
+}
+
+#main-title{
+    font-size: 52px;
+}
+
+.command-line::before {
+    content: "> ";
+}
+
+.command-line-root::before {
+    content: "# ";
+}
+
+.command-line-root .command-line {
+    font-style: italic;
+}
+
+a {
+    color: var(--main-color);
+}
+
+a:hover{
+    text-shadow: 0px 0px 10px var(--main-color);
+}
+
+.project-link{
+    font-size: 23px;
+}
