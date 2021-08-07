@@ -23,7 +23,7 @@ function get_scene_name()
     refraction = values[4][refraction];
 
     filename = `${scene_names[current_scene_index]}-${ambiant}-${aa}-${light_samples}-${reflection}-${refraction}.jpg`;
-    document.getElementById("scene_title").innerText = filename;
+    document.getElementById("scene_title").innerText = scene_names[current_scene_index];
     document.getElementById("render_view").src = `/projects/rt/${filename}`;
 }
 
