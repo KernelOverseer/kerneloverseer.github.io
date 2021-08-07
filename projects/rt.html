@@ -9,6 +9,8 @@
     <meta name="description" content="A simple HTML5 Template for new projects.">
     <meta name="author" content="Aymane Biri <KernelOverseer>">
     <link rel="stylesheet" type="text/css" href="/style/main.css" />
+    <link rel="stylesheet" type="text/css" href="/style/sliders.css" />
+    <script src="/src/rt.js"></script>
     <script src="/src/main.js"></script>
 </head>
 
@@ -16,18 +18,33 @@
     <div class="main-title-bar">
         <div class="content-ltr">
             <h1 id="main-title">Aymane Biri<h1>
-            <h1>&lt;KernelOverseer@pm.me&gt;</h1>
+                    <h1>&lt;KernelOverseer@pm.me&gt;</h1>
         </div>
     </div>
     <div class="main-content">
-        <br/>
-        <hr/>
-        <br/>
+        <br />
+        <hr />
+        <br />
         <div class="content-ltr">
-            <h1 class="auto-type">No content, still working on it</h1>
+            <a class="auto-type" href="/">&lt; Back</a>
+            <h1 class="auto-type">PROJECT : RT</h1>
+            <img id="render_view" src="" style="width:100%"/>
+            <div class="slidecontainer" style="width:100%;">
+                <h1 id="scene_title">NONE</h1>
+                <p class="auto-type">Ambiant</p>
+                <input type="range" min="0" max="2" value="0" class="slider" id="ambiant_range" onchange="get_scene_name()" onmousemove="get_scene_name()">
+                <p class="auto-type">Anti Aliasing</p>
+                <input type="range" min="0" max="0" value="0" class="slider" id="AA_range" onchange="get_scene_name()" onmousemove="get_scene_name()">
+                <p class="auto-type">Light Samples</p>
+                <input type="range" min="0" max="0" value="0" class="slider" id="light_samples_range" onchange="get_scene_name()" onmousemove="get_scene_name()">
+                <p class="auto-type">Reflection Depth</p>
+                <input type="range" min="0" max="4" value="0" class="slider" id="reflection_range" onchange="get_scene_name()" onmousemove="get_scene_name()">
+                <p class="auto-type">Refraction Depth</p>
+                <input type="range" min="0" max="3" value="0" class="slider" id="refraction_range" onchange="get_scene_name()" onmousemove="get_scene_name()">
+            </div>
         </div>
-        <br/>
-        <br/>
+        <br />
+        <br />
         <a class="auto-type" href="#" onclick="reset_type_animations()">redo animation </a>
     </div>
 </body>
