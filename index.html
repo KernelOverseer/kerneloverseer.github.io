@@ -1,40 +1,25 @@
-<!doctype html>
-
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>KernelOverseer - Portfolio</title>
-    <meta name="description" content="A simple HTML5 Template for new projects.">
-    <meta name="author" content="Aymane Biri <KernelOverseer>">
-    <link rel="stylesheet" type="text/css" href="/style/main.css" />
-    <script src="/src/main.js"></script>
+    <title>PortFolio</title>
+    <link href="style.css" rel="stylesheet" />
+    <script src="./src/font.js"></script>
+    <script src="./src/components.js"></script>
+    <script src="./src/graphics.js"></script>
+    <script src="./src/main.js"></script>
 </head>
 
-<body>
-    <div class="main-title-bar">
-        <div class="content-ltr">
-            <h1 id="main-title">Aymane Biri<h1>
-            <h1>&lt;KernelOverseer@pm.me&gt;</h1>
-        </div>
-    </div>
-    <div class="main-content">
-        <br/>
-        <hr/>
-        <br/>
-        <div class="content-ltr">
-            <h2 style="height:100px" id="main-presentation" class="after-cursor"></h2>
-            <h1>Projects :</h2>
-            <a href="/projects/corewar.html" class="command-line project-link">Corewar</a>
-            <p class="auto-type" id="corewar-description">A fight between processes on a virtual machine, running a custom instruction set, writen in C, and an assembler to convert the assembly to code</p>
-            <a href="/projects/rt.html" class="command-line project-link">RT</a>
-            <p class="auto-type" id="rt-description">A RayTracing engine written from scratch in C, loads scenes written in XML</p>
-        </div>
-        <br/>
-        <br/>
-        <a class="auto-type" href="#" onclick="reset_type_animations()">redo animation </a>
-    </div>
+<body id="root">
 </body>
+<script>
+    mainContent();
+</script>
+<style>
+    body {
+        background-color: black;
+    }
+</style>
 
 </html>
