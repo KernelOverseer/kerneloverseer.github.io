@@ -1,7 +1,7 @@
 class ScreenConfig {
   static pixelSize = 2;
   static frameSleep = 1;
-  static hardRefresh = true;
+  static hardRefresh = false;
 }
 
 class Pixel {
@@ -42,11 +42,24 @@ function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-class MouseEvents {
-  constructor() {
-    this.x = 0;
-    this.y = 0;
-    this.click = false;
+class Page {
+  constructor(path) {
+    this.path = path;
+    this.change = false; // if there is a change to pixels, screen should be updated
+    this.renderQueue = []; // queue containing components to be rendered
+    this.rendering = false; // true if in the middle of a render
+    this.pendingQueue = []; // components waiting for the frame to finish rendering before pushing to the queue
+  }
+
+  pushComponent(component) {
+    if (component instanceof Component) {
+      if (this.rendering) {
+        this.pendingQueue.push(component);
+      }
+      else {
+        this.renderQueue.push(component);
+      }
+    }
   }
 }
 
@@ -59,11 +72,11 @@ class PixScreen {
     this.createContainer();
     this.image = this.makeImage();
     this.pixels = this.makePixels();
-    this.renderQueue = [];
-    this.change = false;
 
-    this.mouse = new MouseEvents();
-    this.handleMouse();
+    this.page = new Page();
+    this.nextPage; // page to be switched to
+    // Events
+    this.mouse = new MouseEvents(this);
   }
 
   createContainer() {
@@ -80,17 +93,49 @@ class PixScreen {
 
   async render() {
     while (true) {
-      let newRenderQueue = [];
-      if (ScreenConfig.hardRefresh) this.clear();
-      this.renderQueue.forEach((component) => {
-        component.render(this);
-        if (!component.ended) newRenderQueue.push(component);
-      });
-      this.renderQueue = newRenderQueue;
+      await sleep(ScreenConfig.frameSleep);
+      if (ScreenConfig.hardRefresh)
+        this.clear();
+      this.renderComponents();
       this.updatePixels();
-      if (ScreenConfig.frameSleep > 0) await sleep(ScreenConfig.frameSleep);
-      this.mouse.click = false;
+      this.mouse.update();
     }
+  }
+
+  renderComponents() { // need to refactor this function, became complex
+    if (this.nextPage) {
+      this.page = this.nextPage; // switching to new page
+      this.nextPage = undefined;
+      this.clear(); // clearing previous page content on screen
+    }
+    this.page.rendering = true;
+    if (this.page.newRenderQueue !== undefined) { // switching render Queue if a new queue exists
+      this.page.renderQueue = this.page.newRenderQueue;
+      if (!ScreenConfig.hardRefresh)
+        this.clear();
+      this.page.newRenderQueue = undefined;
+    }
+    else if (this.page.pendingQueue.length > 0) {
+      this.page.renderQueue = this.page.renderQueue.concat(this.page.pendingQueue); // adding pending components added while in the middle of a render
+      this.page.pendingQueue = [];
+    }
+
+    let activeComponents = [];
+    this.page.renderQueue.forEach((component) => { // eliminating components that finished rendering (won't be rendered any further)
+      component.render(this);
+      if (!component.ended) activeComponents.push(component);
+    });
+
+    this.page.renderQueue = activeComponents;
+    this.page.rendering = false;
+  }
+
+  switchRenderQueue(newRenderQueue) {
+    this.page.newRenderQueue = newRenderQueue;
+  }
+
+  switchPage(newPage) {
+    this.nextPage = newPage;
   }
 
   updatePixels() {
@@ -129,9 +174,13 @@ class PixScreen {
 
   putPixel(x, y, color) {
     if (x < 0 || x >= this.width || y < 0 || y >= this.height) return;
-    if (this.image[y][x] != color) {
-      this.image[y][x] = color;
-      this.change = true;
+    try {
+      if (this.image[y][x] != color) {
+        this.image[y][x] = color;
+        this.change = true;
+      }
+    } catch (err) {
+      console.log("error in y", y);
     }
   }
 
@@ -144,23 +193,7 @@ class PixScreen {
   }
 
   pushComponent(component) {
-    if (component instanceof Component) {
-      this.renderQueue.push(component);
-    }
+    this.page.pushComponent(component);
   }
 
-  handleMouse() {
-    document.addEventListener("mousemove", (event) => {
-      let rect = this.dom.getBoundingClientRect();
-      this.mouse.x = Math.floor(
-        (event.pageX - rect.x) / ScreenConfig.pixelSize
-      );
-      this.mouse.y = Math.floor(
-        (event.pageY - rect.y) / ScreenConfig.pixelSize
-      );
-    });
-    document.addEventListener("click", (event) => {
-      this.mouse.click = true;
-    });
-  }
 }

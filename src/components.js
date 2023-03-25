@@ -3,27 +3,28 @@ class Component {
     this.ended = false;
   }
 
-  render(screen) {}
+  render(screen) { }
 }
 
 class Text extends Component {
-  constructor(content, x, y, color = 255, animate = 1, lineBreak = true) {
+  constructor(content, x, y, color = 255, options) {
     super();
     this.setContent(content);
-    this.animate = animate;
-    this.lineBreak = lineBreak;
     this.x = x;
     this.y = y;
     this.currX = x;
     this.currY = y;
     this.color = color;
     this.index = 0;
+    this.lastIndex = 0;
+    this.options = { animate: 1, lineBreak: true, onFinish: null, rerender: false, ...options }
   }
 
   setContent(content) {
     this.content = content;
-    if (this.content instanceof String)
+    if (typeof (this.content) == "string") {
       this.content = this.content.toUpperCase();
+    }
   }
 
   newLine() {
@@ -36,7 +37,7 @@ class Text extends Component {
     if (letter != undefined) {
       for (let i = 0; i < 5; i++) {
         for (let j = 0; j < 5; j++) {
-          if (this.lineBreak && this.currX >= screen.width) this.newLine();
+          if (this.options.lineBreak && this.currX >= screen.width) this.newLine();
           if (letter[i][j])
             screen.putPixel(
               this.currX + j,
@@ -52,17 +53,50 @@ class Text extends Component {
   }
 
   render(screen) {
+    if (this.options.rerender)
+      this.renderLoop(screen);
+    else
+      this.renderOnce(screen);
+    if (this.index >= this.content.length && !this.options.rerender) {
+      this.ended = true;
+      if (typeof this.options.onFinish === 'function') {
+        this.options.onFinish();
+      }
+    }
+  }
+
+  renderOnce(screen) {
     let i = 0;
-    if (this.index >= this.content.length) this.ended = true;
     while (this.index < this.content.length) {
       this.renderLetter(screen);
       this.index++;
       i++;
-      if (this.animate != 0 && i > this.animate) break;
+      if (this.options.animate != 0 && i > this.options.animate) break;
+    }
+  }
+
+  renderLoop(screen) {
+    let i = 0;
+    this.resetLoop();
+    while (this.index < this.content.length) {
+      this.renderLetter(screen);
+      this.index++;
+      if (this.index >= this.lastIndex) {
+        this.lastIndex = this.index;
+        i++;
+      }
+      if (this.options.animate != 0 && i > this.options.animate) break;
     }
   }
 
   reset() {
+    this.currX = this.x;
+    this.currY = this.y;
+    this.index = 0;
+    this.lastIndex = 0;
+  }
+
+  resetLoop() {
     this.currX = this.x;
     this.currY = this.y;
     this.index = 0;

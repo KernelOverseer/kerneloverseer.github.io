@@ -8,7 +8,7 @@ class DebugBar extends Text {
   render(screen) {
     screen.clear(0, this.screen.height - 5, this.lastSize * 6, 5);
     this.setContent(
-      `QUEUE : ${this.screen.renderQueue.length} | MOUSE : ${this.screen.mouse.x} ${this.screen.mouse.y}`
+      `QUEUE : ${this.screen.page.renderQueue.length} | MOUSE : ${this.screen.mouse.x} ${this.screen.mouse.y} ${this.screen.mouse.down ? "DOWN" : "UP"}`
     );
     while (this.index < this.content.length) {
       this.renderLetter(screen);
