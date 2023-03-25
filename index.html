@@ -8,10 +8,15 @@
     <script src="./src/font.js"></script>
     <script src="./src/components.js"></script>
     <script src="./src/graphics.js"></script>
+    <script src="./src/routing.js"></script>
+    <script src="./src/ui.js"></script>
+    <script src="./src/debugBar.js"></script>
     <script src="./src/main.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.6.0/p5.min.js"></script>
 </head>
 
 <body id="root">
+    <div class="canvas_container"></div>
 </body>
 <script>
     mainContent();
@@ -20,6 +25,10 @@
     body {
         background-color: black;
     }
+    .canvas_container{
+        position:absolute;
+        top: 1000px;
+        background-color: red;
+    }
 </style>
-
 </html>
