@@ -8,7 +8,13 @@ function mainContent() {
   let pageRouter = new PageRouter(pixScreen);
   document.getElementById("root").appendChild(pixScreen.dom);
 
-  let pageFunctions = [bootSequencePage, uiTestingPage, introPage];
+  let pageFunctions = [
+    bootSequencePage,
+    uiTestingPage,
+    introPage,
+    projectsPage,
+    rtPage,
+  ];
 
   pageFunctions.forEach((pageFunction) => {
     let page = pageFunction(pixScreen, pageRouter);

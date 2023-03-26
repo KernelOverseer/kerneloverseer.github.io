@@ -15,6 +15,8 @@ class UIComponent extends Component {
     this.onMouseClickCalled = false;
   }
 
+  render(screen) {}
+
   handleEvents(screen) {
     this.isMouseOver(screen);
     this.isMouseCLicked(screen);
@@ -23,25 +25,29 @@ class UIComponent extends Component {
   isMouseCLicked(screen) {
     if (this.hovered && screen.mouse.down) {
       this.clicked = true;
-      if (typeof this.onMouseClick === 'function') {
+      if (typeof this.onMouseClick === "function" && !this.onMouseClickCalled) {
         this.onMouseClick();
         this.onMouseClickCalled = true;
       }
-    }
-    else {
+    } else {
+      this.onMouseClickCalled = false;
       this.clicked = false;
     }
   }
 
   isMouseOver(screen) {
-    if (screen.mouse.x >= this.x && screen.mouse.x < this.x + this.width && screen.mouse.y >= this.y && screen.mouse.y < this.y + this.height) {
+    if (
+      screen.mouse.x >= this.x &&
+      screen.mouse.x < this.x + this.width &&
+      screen.mouse.y >= this.y &&
+      screen.mouse.y < this.y + this.height
+    ) {
       this.hovered = true;
-      if (typeof this.onMouseOver === 'function') {
+      if (typeof this.onMouseOver === "function") {
         this.onMouseOver();
         this.onMouseOverCalled = true;
       }
-    }
-    else {
+    } else {
       this.hovered = false;
     }
     return this.hovered;
@@ -56,27 +62,30 @@ class Button extends UIComponent {
     this.text = new Text(text, x, y, 0, { animate: 1, rerender: true });
     this.centerText();
     this.onMouseClick = callBack;
+    this.lastState;
   }
 
   render(screen) {
     this.handleEvents(screen);
-    if (this.clicked) {
+    if (this.clicked && this.lastState != "clicked") {
       this.renderClickedBackground(screen);
-    }
-    else if (this.hovered) {
+      this.lastState = "clicked";
+    } else if (this.hovered && this.lastState != "hovered") {
       this.renderHoveredBackground(screen);
-    } else {
+      this.lastState = "hovered";
+    } else if (!this.clicked && !this.hovered && this.lastState != "idle") {
       this.renderBackground(screen);
+      this.lastState = "idle";
     }
     this.text.render(screen);
   }
 
   renderHoveredBackground(screen) {
-    this.renderBackground(screen, 247)
+    this.renderBackground(screen, 247);
   }
 
   renderClickedBackground(screen) {
-    this.renderBackground(screen, 248)
+    this.renderBackground(screen, 248);
   }
 
   renderBackground(screen, color = this.color) {
@@ -88,11 +97,86 @@ class Button extends UIComponent {
   }
 
   centerText() {
-    let x =
-      this.x + Math.floor(this.width / 2) - Math.floor(this.text.width / 2);
-    let y =
-      this.y + Math.floor(this.height / 2) - Math.floor(this.text.height / 2);
+    let x = this.x + Math.round(this.width / 2 - this.text.width / 2);
+    let y = this.y + Math.round(this.height / 2 - this.text.height / 2);
     this.text.x = x;
     this.text.y = y;
+  }
+}
+
+class Selector extends UIComponent {
+  constructor(
+    x,
+    y,
+    width,
+    height,
+    options = ["a", "b", "c"],
+    callBack,
+    extendedOptions
+  ) {
+    super(x, y, width, height);
+    this.callBack = callBack;
+    this.options = options;
+    this.extendedOptions = {
+      default: 0,
+      ...extendedOptions,
+    };
+    this.optionIndex = this.extendedOptions.default;
+    this.less = new Button(x, y, 10, height, "<", this.lessPressed.bind(this));
+    this.more = new Button(
+      x + width - 10,
+      y,
+      10,
+      height,
+      ">",
+      this.morePressed.bind(this)
+    );
+    this.text = new Text(this.options[this.optionIndex], x, y, "#ffffff", {
+      animate: 0,
+      rerender: true,
+    });
+    this.centerText();
+  }
+
+  lessPressed() {
+    if (this.optionIndex > 0) {
+      this.optionIndex--;
+      this.optionChanged();
+    }
+  }
+
+  morePressed() {
+    this.optionIndex++;
+    if (this.optionIndex >= this.options.length)
+      this.optionIndex = this.options.length - 1;
+    else {
+      this.optionChanged();
+    }
+  }
+
+  optionChanged() {
+    if (typeof this.callBack === "function") {
+      this.callBack(this.options[this.optionIndex]);
+    }
+    this.text.setContent(this.options[this.optionIndex]);
+    this.centerText();
+  }
+
+  render(screen) {
+    this.clear(screen);
+    this.less.render(screen);
+    this.more.render(screen);
+    this.text.render(screen);
+  }
+
+  centerText() {
+    let x = this.x + Math.round(this.width / 2 - this.text.width / 2);
+    let y = this.y + Math.round(this.height / 2 - this.text.height / 2);
+    this.text.x = x;
+    this.text.y = y;
+  }
+
+  clear(screen) {
+    screen.clear(this.x + 10, this.y, this.width - 20, this.height);
   }
 }

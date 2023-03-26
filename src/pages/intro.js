@@ -17,7 +17,16 @@ function introPage(pixScreen, pageRouter) {
 
   introPage.pushComponent(new DebugBar(pixScreen));
   introPage.pushComponent(
-    new Text(introText, 100, 70, "#ffffff", { animate: 5 })
+    new Text(introText, 100, 70, "#ffffff", {
+      animate: 5,
+      onFinish: () => {
+        introPage.pushComponent(
+          new Button(250, 300, 100, 25, "   PROJECTS   ", () => {
+            pageRouter.navigate("projects");
+          })
+        );
+      },
+    })
   );
 
   introPage.pushComponent(new Image("assets/profile_pic.jpeg", 0, 50));

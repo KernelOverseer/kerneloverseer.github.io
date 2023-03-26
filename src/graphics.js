@@ -1,6 +1,6 @@
 class ScreenConfig {
   static pixelSize = 2;
-  static frameSleep = 1;
+  static frameSleep = 0.1;
   static hardRefresh = false;
 }
 
@@ -55,8 +55,7 @@ class Page {
     if (component instanceof Component) {
       if (this.rendering) {
         this.pendingQueue.push(component);
-      }
-      else {
+      } else {
         this.renderQueue.push(component);
       }
     }
@@ -94,36 +93,42 @@ class PixScreen {
   async render() {
     while (true) {
       await sleep(ScreenConfig.frameSleep);
-      if (ScreenConfig.hardRefresh)
-        this.clear();
+      if (ScreenConfig.hardRefresh) this.clear();
       this.renderComponents();
       this.updatePixels();
       this.mouse.update();
     }
   }
 
-  renderComponents() { // need to refactor this function, became complex
+  // need to refactor this function, became complex
+  renderComponents() {
     if (this.nextPage) {
+      this.page.renderQueue.forEach((component) => {
+        component.destroy();
+      });
       this.page = this.nextPage; // switching to new page
       this.nextPage = undefined;
       this.clear(); // clearing previous page content on screen
     }
     this.page.rendering = true;
-    if (this.page.newRenderQueue !== undefined) { // switching render Queue if a new queue exists
+    if (this.page.newRenderQueue !== undefined) {
+      // switching render Queue if a new queue exists
       this.page.renderQueue = this.page.newRenderQueue;
-      if (!ScreenConfig.hardRefresh)
-        this.clear();
+      if (!ScreenConfig.hardRefresh) this.clear();
       this.page.newRenderQueue = undefined;
-    }
-    else if (this.page.pendingQueue.length > 0) {
-      this.page.renderQueue = this.page.renderQueue.concat(this.page.pendingQueue); // adding pending components added while in the middle of a render
+    } else if (this.page.pendingQueue.length > 0) {
+      this.page.renderQueue = this.page.renderQueue.concat(
+        this.page.pendingQueue
+      ); // adding pending components added while in the middle of a render
       this.page.pendingQueue = [];
     }
 
     let activeComponents = [];
-    this.page.renderQueue.forEach((component) => { // eliminating components that finished rendering (won't be rendered any further)
+    this.page.renderQueue.forEach((component) => {
+      // eliminating components that finished rendering (won't be rendered any further)
       component.render(this);
       if (!component.ended) activeComponents.push(component);
+      else component.destroy();
     });
 
     this.page.renderQueue = activeComponents;
@@ -195,7 +200,6 @@ class PixScreen {
   pushComponent(component) {
     this.page.pushComponent(component);
   }
-
 }
 
 class CanvasScreen {
@@ -220,41 +224,46 @@ class CanvasScreen {
     this.dom.height = this.screenHeight;
     this.dom.style.position = "absolute";
     this.dom.style.left = `calc(50% - ${Math.floor(this.screenWidth / 2)}px)`;
-    this.context = this.dom.getContext('2d');
-    this.imageData = this.context.createImageData(this.screenWidth, this.screenHeight);
+    this.context = this.dom.getContext("2d");
+    this.imageData = this.context.createImageData(
+      this.screenWidth,
+      this.screenHeight
+    );
   }
 
   async render() {
     while (true) {
       await sleep(ScreenConfig.frameSleep);
-      if (ScreenConfig.hardRefresh)
-        this.clear();
+      if (ScreenConfig.hardRefresh) this.clear();
       this.renderComponents();
       this.updatePixels();
       this.mouse.update();
     }
   }
 
-  renderComponents() { // need to refactor this function, became complex
+  renderComponents() {
+    // need to refactor this function, became complex
     if (this.nextPage) {
       this.page = this.nextPage; // switching to new page
       this.nextPage = undefined;
       this.clear(); // clearing previous page content on screen
     }
     this.page.rendering = true;
-    if (this.page.newRenderQueue !== undefined) { // switching render Queue if a new queue exists
+    if (this.page.newRenderQueue !== undefined) {
+      // switching render Queue if a new queue exists
       this.page.renderQueue = this.page.newRenderQueue;
-      if (!ScreenConfig.hardRefresh)
-        this.clear();
+      if (!ScreenConfig.hardRefresh) this.clear();
       this.page.newRenderQueue = undefined;
-    }
-    else if (this.page.pendingQueue.length > 0) {
-      this.page.renderQueue = this.page.renderQueue.concat(this.page.pendingQueue); // adding pending components added while in the middle of a render
+    } else if (this.page.pendingQueue.length > 0) {
+      this.page.renderQueue = this.page.renderQueue.concat(
+        this.page.pendingQueue
+      ); // adding pending components added while in the middle of a render
       this.page.pendingQueue = [];
     }
 
     let activeComponents = [];
-    this.page.renderQueue.forEach((component) => { // eliminating components that finished rendering (won't be rendered any further)
+    this.page.renderQueue.forEach((component) => {
+      // eliminating components that finished rendering (won't be rendered any further)
       component.render(this);
       if (!component.ended) activeComponents.push(component);
     });
@@ -288,15 +297,18 @@ class CanvasScreen {
 
   static hexToRgb(hex) {
     var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-    return result ? {
-      r: parseInt(result[1], 16),
-      g: parseInt(result[2], 16),
-      b: parseInt(result[3], 16)
-    } : null;
+    return result
+      ? {
+          r: parseInt(result[1], 16),
+          g: parseInt(result[2], 16),
+          b: parseInt(result[3], 16),
+        }
+      : null;
   }
 
   setCanvasPixel(x, y) {
-    let i = y, j = x;
+    let i = y,
+      j = x;
     x *= ScreenConfig.pixelSize;
     y *= ScreenConfig.pixelSize;
     let color = CanvasScreen.hexToRgb(PALETTE[this.image[i][j] % 256]);
@@ -342,5 +354,4 @@ class CanvasScreen {
   pushComponent(component) {
     this.page.pushComponent(component);
   }
-
 }

@@ -4,6 +4,8 @@ class Component {
   }
 
   render(screen) {}
+
+  destroy() {}
 }
 
 class Colors {
@@ -104,6 +106,8 @@ class Text extends Component {
     this.content = content;
     if (typeof this.content == "string") {
       this.content = this.content.toUpperCase();
+    } else {
+      this.content = `${this.content}`.toUpperCase();
     }
   }
 
@@ -266,6 +270,45 @@ class Image extends Component {
 
   getGrayscaleFromRGB(r, g, b) {
     return Math.floor((r + g + b) / 3);
+  }
+}
+
+class NativeImage extends Component {
+  constructor(url, x, y, width, height) {
+    super();
+    this.x = x;
+    this.y = y;
+    this.width = width;
+    this.height = height;
+    this.url = url;
+    this.loaded = false;
+    this.displayed = false;
+    this.loadImage(url);
+  }
+
+  loadImage(url) {
+    this.img = new window.Image();
+    this.img.src = url;
+    this.img.onload = () => {
+      this.loaded = true;
+    };
+  }
+
+  render(screen) {
+    if (this.loaded && !this.displayed) {
+      this.img.style.position = "absolute";
+      this.img.style.top = `${this.y * ScreenConfig.pixelSize}px`;
+      this.img.style.left = `${this.x * ScreenConfig.pixelSize}px`;
+      this.img.style.width = `${this.width * ScreenConfig.pixelSize}px`;
+      this.img.style.height = `${this.height * ScreenConfig.pixelSize}px`;
+      screen.dom.appendChild(this.img);
+      this.displayed = true;
+    }
+  }
+
+  destroy() {
+    console.log("IMAGE REMOVED");
+    this.img.remove();
   }
 }
 
