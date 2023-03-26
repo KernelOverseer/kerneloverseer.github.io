@@ -68,18 +68,15 @@ class Button extends UIComponent {
     } else {
       this.renderBackground(screen);
     }
-    // this.text.setContent(status);
-    // this.centerText();
-    // this.text.reset();
     this.text.render(screen);
   }
 
   renderHoveredBackground(screen) {
-    this.renderBackground(screen, 2)
+    this.renderBackground(screen, 247)
   }
 
   renderClickedBackground(screen) {
-    this.renderBackground(screen, 3)
+    this.renderBackground(screen, 248)
   }
 
   renderBackground(screen, color = this.color) {

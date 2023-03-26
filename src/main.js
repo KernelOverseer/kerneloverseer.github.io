@@ -1,77 +1,28 @@
 const DEBUG = false;
 
-function bootSequence(pixScreen, pageRouter) {
-    bootPage = new Page("boot");
-    bootPage.pushComponent(new DebugBar(pixScreen));
-    bootPage.pushComponent(
-        new Text(
-            "Initializing render queue" +
-            "\n\nLoading colors" +
-            "\n\nLoading FONT" +
-            "\n\nLoading Event Handlers" +
-            "\n\nLoading UI Components" +
-            "\n\nLoading BOOT Logo",
-            0,
-            0
-        )
-    );
-    bootPage.pushComponent(
-        new Text(
-            "                          [OK]" +
-            "\n\n               [OK]" +
-            "\n\n             [OK]" +
-            "\n\n                       [OK]" +
-            "\n\n                      [OK]" +
-            "\n\n                  [OK]",
-            0,
-            0,
-            250,
-            {
-                onFinish: () => {
-                    bootPage.pushComponent(new Button(275, 300, 50, 25, "ENTER", () => {
-                        pageRouter.navigate('ui');
-                    }
-                    ))
-                }
-            }
-        )
-    );
-    let art =
-        "      :::    ::: :::::::::: :::::::::  ::::    ::: :::::::::: :::                            \n     :+:   :+:  :+:        :+:    :+: :+:+:   :+: :+:        :+:                             \n    +:+  +:+   +:+        +:+    +:+ :+:+:+  +:+ +:+        +:+                              \n   +#++:++    +#++:++#   +#++:++#:  +#+ +:+ +#+ +#++:++#   +#+                               \n  +#+  +#+   +#+        +#+    +#+ +#+  +#+#+# +#+        +#+                                \n #+#   #+#  #+#        #+#    #+# #+#   #+#+# #+#        #+#                                 \n###    ### ########## ###    ### ###    #### ########## ##########                           ";
-    let art2 =
-        "      ::::::::  :::     ::: :::::::::: :::::::::   ::::::::  :::::::::: :::::::::: ::::::::: \n    :+:    :+: :+:     :+: :+:        :+:    :+: :+:    :+: :+:        :+:        :+:    :+: \n   +:+    +:+ +:+     +:+ +:+        +:+    +:+ +:+        +:+        +:+        +:+    +:+  \n  +#+    +:+ +#+     +:+ +#++:++#   +#++:++#:  +#++:++#++ +#++:++#   +#++:++#   +#++:++#:    \n +#+    +#+  +#+   +#+  +#+        +#+    +#+        +#+ +#+        +#+        +#+    +#+    \n#+#    #+#   #+#+#+#   #+#        #+#    #+# #+#    #+# #+#        #+#        #+#    #+#     \n########      ###     ########## ###    ###  ########  ########## ########## ###    ###      ";
-    bootPage.pushComponent(new Text(art, 50, pixScreen.height / 4, 255, { animate: 10 }));
-    bootPage.pushComponent(
-        new Text(art2, 50, pixScreen.height / 4 + 6 * 14, 255, { animate: 10 })
-    );
-    return bootPage;
-}
-
-function uiTestingPage(pixScreen, pageRouter) {
-    let testingPage = new Page("ui");
-    testingPage.pushComponent(
-        new Button(275, 200, 50, 25, "TEST")
-    );
-    testingPage.pushComponent(new DebugBar(pixScreen));
-    return testingPage;
-}
-
 var pixScreen;
+
 function mainContent() {
     pixScreen = new PixScreen(1200, 800);
     let pageRouter = new PageRouter(pixScreen);
     document.getElementById("root").appendChild(pixScreen.dom);
 
-    let bootPage = bootSequence(pixScreen, pageRouter);
-    let testingPage = uiTestingPage(pixScreen, pageRouter);
+    let pageFunctions = [
+        bootSequencePage,
+        uiTestingPage,
+        introPage
+    ]
 
-    pageRouter.addPage(bootPage);
-    pageRouter.addPage(testingPage);
+    pageFunctions.forEach((pageFunction) => {
+        let page = pageFunction(pixScreen, pageRouter);
+        pageRouter.addPage(page);
+    })
 
-    pageRouter.navigate("boot");
-
-    pixScreen.render();
+    pageRouter.navigate("intro");
+    pixScreen.render(); // render loop
 }
+
+// DEBUG USING P5JS instead of the custom "pixel screen" XD
 
 if (DEBUG) {
     var img;
