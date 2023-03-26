@@ -48,5 +48,30 @@ function bootSequencePage(pixScreen, pageRouter) {
       animate: 10,
     })
   );
+
+  let currentPalette = window.localStorage.getItem("palette");
+  currentPalette = Object.keys(PALETTES).indexOf(currentPalette);
+  if (currentPalette == -1) currentPalette = 1;
+  bootPage.pushComponent(
+    new Text("PALETTE", pixScreen.width - 71, 0, "#ffffff")
+  );
+  bootPage.pushComponent(
+    new Selector(
+      pixScreen.width - 100,
+      6,
+      100,
+      10,
+      Object.keys(PALETTES),
+      (value) => {
+        window.localStorage.setItem("palette", value);
+      },
+      { default: currentPalette }
+    )
+  );
+  bootPage.pushComponent(
+    new Button(pixScreen.width - 100, 18, 100, 10, "   APPLY   ", () => {
+      window.location.reload();
+    })
+  );
   return bootPage;
 }

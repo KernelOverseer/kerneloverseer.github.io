@@ -55,14 +55,18 @@ class UIComponent extends Component {
 }
 
 class Button extends UIComponent {
-  constructor(x, y, width, height, text = "click", callBack, color = 255) {
+  constructor(x, y, width, height, text = "click", callBack) {
     super(x, y, width, height);
-    this.color = color;
     this.callBack = callBack;
     this.text = new Text(text, x, y, 0, { animate: 1, rerender: true });
     this.centerText();
     this.onMouseClick = callBack;
     this.lastState;
+
+    //colors
+    this.idleColor = Colors.getColor("#fffd85");
+    this.hoverColor = Colors.getColor("#92763e");
+    this.clickColor = Colors.getColor("#9f8646");
   }
 
   render(screen) {
@@ -81,14 +85,14 @@ class Button extends UIComponent {
   }
 
   renderHoveredBackground(screen) {
-    this.renderBackground(screen, 247);
+    this.renderBackground(screen, this.hoverColor);
   }
 
   renderClickedBackground(screen) {
-    this.renderBackground(screen, 248);
+    this.renderBackground(screen, this.clickColor);
   }
 
-  renderBackground(screen, color = this.color) {
+  renderBackground(screen, color = this.idleColor) {
     for (let i = 0; i < this.height; i++) {
       for (let j = 0; j < this.width; j++) {
         screen.putPixel(this.x + j, this.y + i, color);

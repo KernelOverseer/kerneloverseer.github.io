@@ -715,7 +715,7 @@ const PALETTE1 = [
   "#ffffff",
 ];
 
-const PALETTE = [
+const PALETTE2 = [
   "#000000",
   "#111111",
   "#222222",
@@ -1750,3 +1750,13 @@ const PALETTE5 = [
   "#cceecc",
   "#eeeeee",
 ];
+
+var PALETTE = PALETTE2;
+
+const PALETTES = {
+  "windows 95": PALETTE1,
+  atari: PALETTE2,
+  aurora: PALETTE3,
+  "8 bit rgbm": PALETTE4,
+  macintosh: PALETTE5,
+};

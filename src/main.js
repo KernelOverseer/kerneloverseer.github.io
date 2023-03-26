@@ -4,6 +4,7 @@ var pixScreen;
 
 function mainContent() {
   pixScreen = new PixScreen(1200, 800);
+  Colors.switchPalette(window.localStorage.getItem("palette"));
   // pixScreen = new CanvasScreen(1220, 800);
   let pageRouter = new PageRouter(pixScreen);
   document.getElementById("root").appendChild(pixScreen.dom);

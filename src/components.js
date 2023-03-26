@@ -80,6 +80,13 @@ class Colors {
     }
     return nearest;
   }
+
+  static switchPalette(name) {
+    let entry = PALETTES[name];
+    if (entry !== undefined) {
+      PALETTE = entry;
+    }
+  }
 }
 
 class Text extends Component {
