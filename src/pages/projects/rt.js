@@ -1,3 +1,14 @@
+/*
+parameters = {
+    'ambiant': [0, 0.5, 1],
+    'anti_aliasing': [1],
+    'depth_of_field': [0],
+    'light_samples': [1],
+    'refraction_depth': [0, 5],
+    'reflection_depth': [0, 5, 10]
+}
+*/
+
 function rtPage(pixScreen, pageRouter) {
   let page = new Page("project-rt");
 
