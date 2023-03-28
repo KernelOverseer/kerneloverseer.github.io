@@ -1,0 +1,18 @@
+<scene ambiant="0.50" AA="4" depth_of_field="0" resolution="400" light_samples="1" refraction_depth="5" reflection_depth="5"/>
+<camera position="(0, 10, 60)" lookat="(0, 0, 0)"/>
+<light center="(0, 20, 20)"  radius="2" intensity="1" color="#FFFFFF" />
+<plane reflection="0.7" center="(0, -10, 0)" U="(0, 0, 1)" V="(1, 0, 0)" color="#FF0000"/>
+<plane reflection="0.7" center="(0, 30, 0)" U="(0, 0, 1)" V="(1, 0, 0)" color="#00FF00"/>
+<plane reflection="0.7" center="(30, 0, 0)" U="(0, 0, 1)" V="(0, 1, 0)" color="#0000FF"/>
+<plane reflection="0.7" center="(-30, 0, 0)" U="(0, 0, 1)" V="(0, 1, 0)" color="#FF00FF"/>
+<plane reflection="0.7" center="(0, 0, 70)"  U="(1, 0, 0)" V="(0, 1, 0)" color="#D3D3D3"/>
+<plane reflection="0.7" center="(0, 0, -50)"  U="(1, 0, 0)" V="(0, 1, 0)" color="#D3D3D3"/>
+<sphere center="(-20,0,0)" reflection="0.7" radius="5" bump_mapping="./textures/stained_glass.tex"/>
+<sphere center="(-10,0,0)" reflection="0.7" refraction="1.0" transparency="0.4" radius="5" bump_mapping="./textures/tinted_glass.tex"/>
+<sphere center="(0,0,0)"   reflection="0.7" refraction="1.1" transparency="0.6" radius="5" bump_mapping="./textures/tinted_glass.tex"/>
+<sphere center="(10,0,0)"  reflection="0.7" refraction="1.2" transparency="0.8" radius="5" bump_mapping="./textures/tinted_glass.tex"/>
+<sphere center="(20,0,0)" reflection="0.7" transparency="0.8" radius="5"/>
+<cube center="(-10,0,0)" color="(255,127,80)" side="3"/>
+<cube center="(0,0,0)"   color="(255,127,80)" side="3"/>
+<cube center="(10,0,0)"  color="(255,127,80)" side="3"/>
+<cube center="(20,0,0)"  color="(255,127,80)" side="3"/>

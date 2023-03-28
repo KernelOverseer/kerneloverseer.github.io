@@ -1,14 +1,3 @@
-/*
-parameters = {
-    'ambiant': [0, 0.5, 1],
-    'anti_aliasing': [1],
-    'depth_of_field': [0],
-    'light_samples': [1],
-    'refraction_depth': [0, 5],
-    'reflection_depth': [0, 5, 10]
-}
-*/
-
 var rtParams = {
   'ambiant': 0,
   'anti_aliasing': 0,
@@ -48,23 +37,31 @@ function rtPage(pixScreen, pageRouter) {
   let params = [
     {
       label: "ambiant",
-      options: [0, 0.5, 1],
+      options: [0.5, 1],
       callBack: (value) => {
         rtParams['ambiant'] = getParamIndex(params, 'ambiant', value);
         updateImageUrl(canvas.img);
       },
     },
+    // {
+    //   label: "light samples",
+    //   options: [1],
+    //   callBack: (value) => {
+    //     rtParams['light_samples'] = getParamIndex(params, 'light samples', value);
+    //     updateImageUrl(canvas.img);
+    //   },
+    // },
     {
-      label: "light samples",
-      options: [1],
+      label: "AA",
+      options: [1, 2, 4],
       callBack: (value) => {
-        rtParams['light_samples'] = getParamIndex(params, 'light samples', value);
+        rtParams['anti_aliasing'] = getParamIndex(params, 'AA', value);
         updateImageUrl(canvas.img);
       },
     },
     {
       label: "reflection",
-      options: [0, 5, 10],
+      options: [0, 2, 5],
       callBack: (value) => {
         rtParams['reflection_depth'] = getParamIndex(params, 'reflection', value);
         updateImageUrl(canvas.img);
@@ -72,7 +69,7 @@ function rtPage(pixScreen, pageRouter) {
     },
     {
       label: "refraction",
-      options: [0, 5],
+      options: [0, 2, 5],
       callBack: (value) => {
         rtParams['refraction_depth'] = getParamIndex(params, 'refraction', value);
         updateImageUrl(canvas.img);
@@ -83,7 +80,7 @@ function rtPage(pixScreen, pageRouter) {
   params.forEach((param, index) => {
     page.pushComponent(
       new Selector(
-        pos.x + 80 + rect.w * Math.floor(index / maxStack),
+        pos.x + 90 + rect.w * Math.floor(index / maxStack),
         pos.y + rect.h * (index % maxStack),
         50,
         9,

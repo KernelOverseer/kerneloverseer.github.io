@@ -15,10 +15,10 @@ class MouseEvents {
         document.addEventListener("mousemove", (event) => {
             let rect = this.screen.dom.getBoundingClientRect();
             this.newX = Math.floor(
-                (event.pageX - rect.x) / ScreenConfig.pixelSize
+                (event.clientX - rect.x) / ScreenConfig.pixelSize
             );
             this.newY = Math.floor(
-                (event.pageY - rect.y) / ScreenConfig.pixelSize
+                (event.clientY - rect.y) / ScreenConfig.pixelSize
             );
         });
         document.addEventListener("mousedown", (event) => {
