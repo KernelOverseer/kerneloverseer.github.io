@@ -16,6 +16,7 @@ function introPage(pixScreen, pageRouter) {
     "- Marketplace mobile app with backend.\n\n";
 
   introPage.pushComponent(new DebugBar(pixScreen));
+  introPage.pushComponent(new Image("assets/profile_pic.jpeg", 0, 50));
   introPage.pushComponent(
     new Text(introText, 100, 70, "#ffffff", {
       animate: 5,
@@ -28,8 +29,6 @@ function introPage(pixScreen, pageRouter) {
       },
     })
   );
-
-  introPage.pushComponent(new Image("assets/profile_pic.jpeg", 0, 50));
 
   return introPage;
 }

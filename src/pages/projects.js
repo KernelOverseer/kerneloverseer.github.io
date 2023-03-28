@@ -1,5 +1,6 @@
 function projectsPage(pixScreen, pageRouter) {
   let page = new Page("projects");
+  page.pushComponent(new Text("Work In Progress", 0, 0, "#ff00ff"));
   let projects = [
     {
       title: "RT",

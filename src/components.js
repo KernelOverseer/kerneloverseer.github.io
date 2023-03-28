@@ -3,20 +3,22 @@ class Component {
     this.ended = false;
   }
 
-  render(screen) {}
+  render(screen) { }
 
-  destroy() {}
+  destroy() { }
 }
+
+var colorCache = {};
 
 class Colors {
   static hexToRgb(hex) {
     var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
     return result
       ? {
-          r: parseInt(result[1], 16),
-          g: parseInt(result[2], 16),
-          b: parseInt(result[3], 16),
-        }
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16),
+      }
       : null;
   }
 
@@ -64,7 +66,8 @@ class Colors {
     return hex;
   }
 
-  static getNearestColor({ r, g, b }) {
+  static cacheColor(r, g, b) {
+    let colorString = `${r}.${g}.${b}`
     let nearest = 0;
     let nearestDistance = Infinity;
     for (let i = 0; i < PALETTE.length; i++) {
@@ -78,7 +81,19 @@ class Colors {
         nearestDistance = distance;
       }
     }
+    colorCache[colorString] = nearest;
     return nearest;
+  }
+
+  static cachedColor(r, g, b) {
+    let colorString = `${r}.${g}.${b}`
+    if (colorCache[colorString] !== undefined)
+      return colorCache[colorString]
+    return Colors.cacheColor(r, g, b)
+  }
+
+  static getNearestColor({ r, g, b }) {
+    return Colors.cachedColor(r, g, b);
   }
 
   static switchPalette(name) {
@@ -208,17 +223,23 @@ class Image extends Component {
     this.y = y;
     this.url = url;
     this.loaded = false;
+    this.row = 0;
     this.loadImage(url);
   }
 
   render(screen) {
+    let rows = 0;
     if (this.loaded) {
-      for (let i = 0; i < this.height; i++) {
+      while (rows < 5 && this.row < this.height) {
+        let i = this.row;
         for (let j = 0; j < this.width; j++) {
           screen.putPixel(this.x + j, this.y + i, this.pixels[i][j]);
         }
+        this.row++
+        rows++;
       }
-      this.ended = true;
+      if (this.row >= this.height)
+        this.ended = true;
     }
   }
 
@@ -242,6 +263,19 @@ class Image extends Component {
     };
   }
 
+  loadRow(pixels, i) {
+    for (let j = 0; j < this.width; j++) {
+      let index = j * 4 + i * this.width * 4;
+      try {
+        this.pixels[i][j] = Colors.getNearestColor({
+          r: pixels[index],
+          g: pixels[index + 1],
+          b: pixels[index + 2],
+        });
+      } catch (err) { }
+    }
+  }
+
   imageLoaded() {
     try {
       this.width = this.img.width;
@@ -254,16 +288,7 @@ class Image extends Component {
       this.createPixels(this.img.width, this.img.height);
       let pixels = context.getImageData(0, 0, this.width, this.height).data;
       for (let i = 0; i < this.height; i++) {
-        for (let j = 0; j < this.width; j++) {
-          let index = j * 4 + i * this.width * 4;
-          try {
-            this.pixels[i][j] = Colors.getNearestColor({
-              r: pixels[index],
-              g: pixels[index + 1],
-              b: pixels[index + 2],
-            });
-          } catch (err) {}
-        }
+        this.loadRow(pixels, i);
       }
       canvas.remove();
       this.loaded = true;
@@ -277,6 +302,19 @@ class Image extends Component {
 
   getGrayscaleFromRGB(r, g, b) {
     return Math.floor((r + g + b) / 3);
+  }
+
+  static preload(images) {
+    let loadedCount = 0;
+    let imageComponents = []
+    images.forEach((url) => {
+      let image = new window.Image();
+      image.src = url;
+      image.onload = () => {
+        loadedCount++;
+      }
+      imageComponents.push(imageComponents);
+    });
   }
 }
 
@@ -308,6 +346,7 @@ class NativeImage extends Component {
       this.img.style.left = `${this.x * ScreenConfig.pixelSize}px`;
       this.img.style.width = `${this.width * ScreenConfig.pixelSize}px`;
       this.img.style.height = `${this.height * ScreenConfig.pixelSize}px`;
+      this.img.style.userSelect = 'none';
       screen.dom.appendChild(this.img);
       this.displayed = true;
     }

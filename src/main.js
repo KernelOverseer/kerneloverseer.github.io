@@ -2,6 +2,8 @@ const DEBUG = false;
 
 var pixScreen;
 
+const rt_images = ["assets/rt/render-0-0-0-0-0-0.bmp", "assets/rt/render-0-0-0-0-0-1.bmp", "assets/rt/render-0-0-0-0-0-2.bmp", "assets/rt/render-0-0-0-0-1-0.bmp", "assets/rt/render-0-0-0-0-1-1.bmp", "assets/rt/render-0-0-0-0-1-2.bmp", "assets/rt/render-1-0-0-0-0-0.bmp", "assets/rt/render-1-0-0-0-0-1.bmp", "assets/rt/render-1-0-0-0-0-2.bmp", "assets/rt/render-1-0-0-0-1-0.bmp", "assets/rt/render-1-0-0-0-1-1.bmp", "assets/rt/render-1-0-0-0-1-2.bmp", "assets/rt/render-2-0-0-0-0-0.bmp", "assets/rt/render-2-0-0-0-0-1.bmp", "assets/rt/render-2-0-0-0-0-2.bmp", "assets/rt/render-2-0-0-0-1-0.bmp", "assets/rt/render-2-0-0-0-1-1.bmp", "assets/rt/render-2-0-0-0-1-2.bmp"];
+
 function mainContent() {
   pixScreen = new PixScreen(1200, 800);
   Colors.switchPalette(window.localStorage.getItem("palette"));
@@ -22,6 +24,7 @@ function mainContent() {
     pageRouter.addPage(page);
   });
 
+  Image.preload(rt_images);
   pageRouter.navigate("boot");
   pixScreen.render(); // render loop
 }
@@ -47,10 +50,10 @@ if (DEBUG) {
     var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
     return result
       ? {
-          r: parseInt(result[1], 16),
-          g: parseInt(result[2], 16),
-          b: parseInt(result[3], 16),
-        }
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16),
+      }
       : null;
   }
 

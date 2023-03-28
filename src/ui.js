@@ -15,7 +15,7 @@ class UIComponent extends Component {
     this.onMouseClickCalled = false;
   }
 
-  render(screen) {}
+  render(screen) { }
 
   handleEvents(screen) {
     this.isMouseOver(screen);
@@ -55,8 +55,12 @@ class UIComponent extends Component {
 }
 
 class Button extends UIComponent {
-  constructor(x, y, width, height, text = "click", callBack) {
+  constructor(x, y, width, height, text = "click", callBack, extendedOptions) {
     super(x, y, width, height);
+    this.extendedOptions = {
+      disabled: false,
+      ...extendedOptions,
+    };
     this.callBack = callBack;
     this.text = new Text(text, x, y, 0, { animate: 1, rerender: true });
     this.centerText();
@@ -67,21 +71,32 @@ class Button extends UIComponent {
     this.idleColor = Colors.getColor("#fffd85");
     this.hoverColor = Colors.getColor("#92763e");
     this.clickColor = Colors.getColor("#9f8646");
+    this.disabledColor = Colors.getColor("#cdcdcd");
   }
 
   render(screen) {
     this.handleEvents(screen);
-    if (this.clicked && this.lastState != "clicked") {
-      this.renderClickedBackground(screen);
-      this.lastState = "clicked";
-    } else if (this.hovered && this.lastState != "hovered") {
-      this.renderHoveredBackground(screen);
-      this.lastState = "hovered";
-    } else if (!this.clicked && !this.hovered && this.lastState != "idle") {
-      this.renderBackground(screen);
-      this.lastState = "idle";
+    if (this.extendedOptions.disabled) {
+      this.renderDisabledBackground(screen);
+      this.lastState = "disabled";
+    }
+    else {
+      if (this.clicked && this.lastState != "clicked") {
+        this.renderClickedBackground(screen);
+        this.lastState = "clicked";
+      } else if (this.hovered && this.lastState != "hovered") {
+        this.renderHoveredBackground(screen);
+        this.lastState = "hovered";
+      } else if (!this.clicked && !this.hovered && this.lastState != "idle") {
+        this.renderBackground(screen);
+        this.lastState = "idle";
+      }
     }
     this.text.render(screen);
+  }
+
+  renderDisabledBackground(screen) {
+    this.renderBackground(screen, this.disabledColor);
   }
 
   renderHoveredBackground(screen) {
@@ -151,8 +166,9 @@ class Selector extends UIComponent {
 
   morePressed() {
     this.optionIndex++;
-    if (this.optionIndex >= this.options.length)
+    if (this.optionIndex >= this.options.length) {
       this.optionIndex = this.options.length - 1;
+    }
     else {
       this.optionChanged();
     }
@@ -168,6 +184,9 @@ class Selector extends UIComponent {
 
   render(screen) {
     this.clear(screen);
+    this.less.extendedOptions.disabled = (this.optionIndex == 0);
+    this.more.extendedOptions.disabled = (this.optionIndex == this.options.length - 1);
+
     this.less.render(screen);
     this.more.render(screen);
     this.text.render(screen);
