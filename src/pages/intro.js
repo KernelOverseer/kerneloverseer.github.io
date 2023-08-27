@@ -1,5 +1,5 @@
 function introPage(pixScreen, pageRouter) {
-  let introPage = new Page("intro");
+  let page = new Page("intro", introPage);
 
   let introText =
     "Hello, I am Aymane Biri, a programmer experienced in C/C++/Python development,\n\nI enjoy solving problems, and coming up with brilliant solutions.\n\n\n\n" +
@@ -15,13 +15,13 @@ function introPage(pixScreen, pageRouter) {
     "- Game boy and Game Boy Color Emulator in C++.\n\n" +
     "- Marketplace mobile app with backend.\n\n";
 
-  introPage.pushComponent(new DebugBar(pixScreen));
-  introPage.pushComponent(new Image("assets/profile_pic.jpeg", 0, 50));
-  introPage.pushComponent(
+  page.pushComponent(new DebugBar(pixScreen));
+  page.pushComponent(new Image("assets/profile_pic.jpeg", 0, 50));
+  page.pushComponent(
     new Text(introText, 100, 70, "#ffffff", {
       animate: 5,
       onFinish: () => {
-        introPage.pushComponent(
+        page.pushComponent(
           new Button(250, 300, 100, 25, "   PROJECTS   ", () => {
             pageRouter.navigate("projects");
           })
@@ -30,5 +30,5 @@ function introPage(pixScreen, pageRouter) {
     })
   );
 
-  return introPage;
+  return page;
 }

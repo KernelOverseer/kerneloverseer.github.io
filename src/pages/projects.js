@@ -1,20 +1,21 @@
 function projectsPage(pixScreen, pageRouter) {
-  let page = new Page("projects");
+  let page = new Page("projects", projectsPage);
   page.pushComponent(new Text("Work In Progress", 0, 0, "#ff00ff"));
   let projects = [
     {
       title: "RT",
       description: "A raytracing program built from scratch in C language",
-      page: "project-rt",
+      page: "projects/rt",
     },
     {
       title: "KSICARDOOM",
       description:
         "A DOOM and Duke Nukem 3D style game with ray-casting,\n\nfeaturing a level editor and multiplayer from scratch in C",
+      page: "projects/doom",
     },
     {
       title: "COREWAR",
-      description: "Virtual Machine game using custom assembly instructions",
+      description: "Virtual Machine game using custom assembly instructions\n\n(WORK IN PROGRESS)",
     },
     // { title: "FDF", description: "not a project but something else" },
   ];

@@ -43,8 +43,10 @@ function sleep(ms) {
 }
 
 class Page {
-  constructor(path) {
+  constructor(path, creator) {
     this.path = path;
+    this.creator = creator;
+    this.renderedAtLeastOnce = false; // true if the page has been rendered at least once
     this.change = false; // if there is a change to pixels, screen should be updated
     this.renderQueue = []; // queue containing components to be rendered
     this.rendering = false; // true if in the middle of a render
@@ -59,6 +61,12 @@ class Page {
         this.renderQueue.push(component);
       }
     }
+  }
+
+  reload(pageRouter) {
+    if (this.creator !== undefined && this.renderedAtLeastOnce)
+      return this.creator(pageRouter.screen, pageRouter);
+    return this;
   }
 }
 
@@ -133,6 +141,7 @@ class PixScreen {
 
     this.page.renderQueue = activeComponents;
     this.page.rendering = false;
+    this.page.renderedAtLeastOnce = true;
   }
 
   switchRenderQueue(newRenderQueue) {
@@ -299,10 +308,10 @@ class CanvasScreen {
     var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
     return result
       ? {
-          r: parseInt(result[1], 16),
-          g: parseInt(result[2], 16),
-          b: parseInt(result[3], 16),
-        }
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16),
+      }
       : null;
   }
 

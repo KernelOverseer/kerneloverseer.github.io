@@ -1,5 +1,5 @@
 function bootSequencePage(pixScreen, pageRouter) {
-    let bootPage = new Page("boot");
+    let bootPage = new Page("boot", bootSequencePage);
     bootPage.pushComponent(new DebugBar(pixScreen));
     bootPage.pushComponent(
         new Text(

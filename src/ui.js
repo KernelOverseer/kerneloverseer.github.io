@@ -28,6 +28,8 @@ class UIComponent extends Component {
       if (typeof this.onMouseClick === "function" && !this.onMouseClickCalled) {
         this.onMouseClick();
         this.onMouseClickCalled = true;
+        console.log("CALLBACKED");
+        screen.mouse.newDown = false; // forcing click to be called only once
       }
     } else {
       this.onMouseClickCalled = false;

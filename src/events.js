@@ -22,10 +22,12 @@ class MouseEvents {
             );
         });
         document.addEventListener("mousedown", (event) => {
+            console.log("down");
             this.down = true;
             this.newDown = true;
         });
         document.addEventListener("mouseup", (event) => {
+            console.log("up");
             this.newDown = false;
         });
     }

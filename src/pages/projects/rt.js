@@ -22,9 +22,18 @@ function updateImageUrl(img) {
 }
 
 function rtPage(pixScreen, pageRouter) {
-  let page = new Page("project-rt");
+  let page = new Page("projects/rt", rtPage);
 
   page.pushComponent(new DebugBar(pixScreen));
+  page.pushComponent(new Button(20, 20, 50, 15, "<- back", () => {
+    pageRouter.back();
+  })
+  );
+  page.pushComponent(new Button(200, 45, 200, 15, "Check it on Github", () => {
+    pageRouter.back();
+    window.open("https://github.com/kerneloverseer/rt", "_blank");
+  })
+  );
   page.pushComponent(new Text("PROJECTS - RT", 261, 25, "#ffffff"));
 
   let canvas = new NativeImage(getImageUrl(), 100, 70, 400, 225);

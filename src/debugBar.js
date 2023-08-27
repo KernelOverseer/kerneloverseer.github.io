@@ -25,11 +25,10 @@ class DebugBar extends Text {
     this.time = currentTime;
 
     screen.clear(0, this.screen.height - 5, this.lastSize * 6, 5);
+    // console.log("PAGE IS :", this.screen.page);
     this.setContent(
-      `QUEUE : ${this.screen.page.renderQueue.length} | SCREEN : ${
-        this.screen.width
-      } ${this.screen.height} | MOUSE : ${this.screen.mouse.x} ${
-        this.screen.mouse.y
+      `QUEUE : ${this.screen.page.renderQueue.length} | SCREEN : ${this.screen.width
+      } ${this.screen.height} | MOUSE : ${this.screen.mouse.x} ${this.screen.mouse.y
       } ${this.screen.mouse.down ? "DOWN" : "UP"} | FPS : ${this.fps}`
     );
     while (this.index < this.content.length) {

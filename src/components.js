@@ -318,6 +318,51 @@ class Image extends Component {
   }
 }
 
+class IframeEmbed extends Component {
+  constructor(url, x, y, width, height) {
+    super();
+    this.x = x;
+    this.y = y;
+    this.width = width;
+    this.height = height;
+    this.url = url;
+    this.loaded = false;
+    this.displayed = false;
+    this.loadIframe(url);
+  }
+
+  loadIframe(url) {
+    this.iframe = document.createElement("iframe");
+    this.iframe.setAttribute("src", url);
+    this.iframe.setAttribute("scrolling", "no");
+    // avoid iframe to steal mouse events
+    this.iframe.onload = () => {
+      console.log("IFRAME ONLOAD");
+      this.iframe.style.pointerEvents = "auto";
+    }
+    console.log("IFRAME POINTER NONE");
+    this.iframe.style.pointerEvents = "none";
+  }
+
+  render(screen) {
+    if (!this.displayed) {
+      this.iframe.style.position = "absolute";
+      this.iframe.style.top = `${this.y * ScreenConfig.pixelSize}px`;
+      this.iframe.style.left = `${this.x * ScreenConfig.pixelSize}px`;
+      this.iframe.style.width = `${this.width * ScreenConfig.pixelSize}px`;
+      this.iframe.style.height = `${this.height * ScreenConfig.pixelSize}px`;
+      this.iframe.style.userSelect = 'none';
+      screen.dom.appendChild(this.iframe);
+      this.displayed = true;
+    }
+  }
+
+  destroy() {
+    console.log("IFRAME REMOVED");
+    this.iframe.remove();
+  }
+}
+
 class NativeImage extends Component {
   constructor(url, x, y, width, height) {
     super();
